@@ -15,23 +15,23 @@ public class ProductRepository : IProductRepository
 
     public async Task<List<Product>> GetAllAsync()
     {
-        return await _context.Proucts.ToListAsync();
+        return await _context.Products.ToListAsync();
     }
 
     public async Task<Product?> GetByIdAsync(Guid productId)
     {
-        return await _context.Proucts.FirstOrDefaultAsync(p => p.ProductResourceId == productId);
+        return await _context.Products.FirstOrDefaultAsync(p => p.ProductResourceId == productId);
     }
 
     public async Task<Product> AddAsync(Product product)
     {
-        await _context.Proucts.AddAsync(product);
+        await _context.Products.AddAsync(product);
         return product;
     }
 
     public async Task DeleteAsync(Product product)
     {
-        _context.Proucts.Remove(product);
+        _context.Products.Remove(product);
     }
 
 

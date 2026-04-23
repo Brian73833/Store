@@ -1,0 +1,35 @@
+using System;
+using StoreBackend.Api.Models.Requests;
+using StoreBackend.Api.Models.Responses;
+using StoreBackend.Dto;
+
+namespace StoreBackend.Api.Mappers;
+
+public class UserMapper
+{
+    public static UserDto ToDto(CreateUserRequestModel model)
+    {
+        return new UserDto
+        {
+            ExternalId = model.ExternalId!.Value,
+            Username = model.Username,
+            Email = model.Email,
+            Passwordhash = model.Passwordhash
+        };
+    }
+
+    public static List<UserResponseModel> ToModel(List<UserDto> users)
+    {
+        return users.Select(u => ToModel(u)).ToList();
+    }
+
+    public static UserResponseModel ToModel(UserDto user)
+    {
+        return new UserResponseModel
+        {
+            ExternalId = user.ExternalId,
+            Username = user.Username,
+            Email = user.Email
+        };
+    }
+}
