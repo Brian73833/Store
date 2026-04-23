@@ -1,0 +1,62 @@
+# Build output
+**/[Bb]in/
+**/[Oo]bj/
+**/AppPackages/
+**/TestResults/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.VC.opendb
+*.dbmdl
+*.bak
+*.cache
+*.log
+
+# Rider
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+.history/
+
+# NuGet
+*.nupkg
+**/packages/
+*.nuget.props
+*.nuget.targets
+
+# ASP.NET / .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Publish output
+publish/
+
+# User and temporary files
+*.tmp
+*.temp
+*.log
+*.vsix
+*.swp
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Secrets
+*.pfx
+*.key
+*.pem
+*.jks
+*.der
+*.crt
