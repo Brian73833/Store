@@ -16,9 +16,9 @@ public class UserMapper
         return new UserDto
         {
             ExternalId = user.ExternalId,
+            Name = user.Name,
             Username = user.Username,
             Email = user.Email,
-            Passwordhash = user.Passwordhash
         };
     }
 }

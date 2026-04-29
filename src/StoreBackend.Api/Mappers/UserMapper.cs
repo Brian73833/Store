@@ -5,19 +5,9 @@ using StoreBackend.Dto;
 
 namespace StoreBackend.Api.Mappers;
 
+
 public class UserMapper
 {
-    public static UserDto ToDto(CreateUserRequestModel model)
-    {
-        return new UserDto
-        {
-            ExternalId = model.ExternalId!.Value,
-            Username = model.Username,
-            Email = model.Email,
-            Passwordhash = model.Passwordhash
-        };
-    }
-
     public static List<UserResponseModel> ToModel(List<UserDto> users)
     {
         return users.Select(u => ToModel(u)).ToList();
@@ -28,8 +18,22 @@ public class UserMapper
         return new UserResponseModel
         {
             ExternalId = user.ExternalId,
+            Name = user.Name,
             Username = user.Username,
-            Email = user.Email
+            Email = user.Email,
         };
     }
+
+    public static CreateUserDto ToDto(CreateUserRequestModel user)
+    {
+        return new CreateUserDto
+        {
+            Name = user.Name,
+            Username = user.Username,
+            Email = user.Email,
+            Password = user.Password,
+        };
+    }
+
+
 }

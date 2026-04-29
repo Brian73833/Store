@@ -23,14 +23,24 @@ public class UserRepository : IUserRepository
         return await _context.Users.FirstOrDefaultAsync(u => u.ExternalId == externalId);
     }
 
-    public async Task<User> AddAsync(User user)
-    {
-        await _context.Users.AddAsync(user);
-        return user;
-    }
-
     public async Task DeleteAsync(User user)
     {
         _context.Users.Remove(user);
+    }
+
+    public async Task<User> CreateAsync(User user)
+    {
+        _context.Users.Add(user);
+        return user;
+    }
+
+    public async Task<bool> HasUserByUsernameAsync(string username)
+    {
+        return await _context.Users.AnyAsync(u => u.Username == username);
+    }
+
+    public async Task<bool> HasUserByEmailAsync(string email)
+    {
+        return await _context.Users.AnyAsync(u => u.Email == email);
     }
 }

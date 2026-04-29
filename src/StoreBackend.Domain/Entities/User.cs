@@ -13,6 +13,12 @@ public class User
     [Required]
     public Guid ExternalId { get; set; }
 
+    [Column("Name")]
+    [StringLength(50)]
+    [Required]
+    public required string Name { get; set; }
+
+
     [Required]
     [MaxLength(50)]
     public string? Username { get; set; }
@@ -23,5 +29,5 @@ public class User
 
     [Required]
     [MaxLength(256)]
-    public string? Passwordhash { get; set; }
+    public string? PasswordHash { get; set; }
 }

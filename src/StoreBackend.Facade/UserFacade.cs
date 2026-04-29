@@ -32,16 +32,16 @@ public class UserFacade : IUserFacade
         return UserMapper.ToDto(entity);
     }
 
-    public async Task<UserDto> AddAsync(UserDto user)
-    {
-        var entity = await userService.AddAsync(user);
-        await context.SaveChangesAsync();
-        return UserMapper.ToDto(entity);
-    }
-
     public async Task DeleteAsync(Guid externalId)
     {
         await userService.DeleteAsync(externalId);
         await context.SaveChangesAsync();
+    }
+
+    public async Task<UserDto> CreateAsync(CreateUserDto user)
+    {
+        var entity = await userService.CreateAsync(user);
+        await context.SaveChangesAsync();
+        return UserMapper.ToDto(entity);
     }
 }
