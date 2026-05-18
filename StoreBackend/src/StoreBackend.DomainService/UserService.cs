@@ -9,7 +9,6 @@ namespace StoreBackend.DomainService;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-
     public UserService(IUserRepository userRepository)
     {
         _userRepository = userRepository;
@@ -20,16 +19,9 @@ public class UserService : IUserService
         return _userRepository.GetAllAsync();
     }
 
-    public Task<User?> GetByIdAsync(Guid externalId)
+    public Task<User?> GetByResourceIdAsync(Guid id)
     {
-        return _userRepository.GetByIdAsync(externalId);
-    }
-
-    public async Task DeleteAsync(Guid externalId)
-    {
-        var user = await _userRepository.GetByIdAsync(externalId);
-        if (user == null) throw new ResourceNotFoundException();
-        await _userRepository.DeleteAsync(user);
+        return _userRepository.GetByIdAsync(id);
     }
 
     public async Task<User> CreateAsync(CreateUserDto user)
@@ -45,13 +37,29 @@ public class UserService : IUserService
 
         var entity = new User
         {
-            ExternalId = Guid.NewGuid(),
+            UserResourceId = Guid.NewGuid(),
             Name = user.Name,
             Username = user.Username,
             Email = user.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.Password)
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.Password),
         };
+
         return await _userRepository.CreateAsync(entity);
     }
 
+    public async Task<User?> GetByUserAndPassword(AuthorizationRequestDto request)
+    {
+        var user = await _userRepository.GetByUsername(request.Username);
+        if (user == null)
+        {
+            return null;
+        }
+
+        if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        {
+            return null;
+        }
+
+        return user;
+    }
 }

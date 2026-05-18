@@ -1,5 +1,7 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace StoreBackend.Domain.Entities;
 
@@ -8,26 +10,36 @@ public class User
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; private set; }
+    public int UserId { get; private set; }
 
     [Required]
-    public Guid ExternalId { get; set; }
+    public Guid UserResourceId { get; set; }
 
     [Column("Name")]
     [StringLength(50)]
     [Required]
     public required string Name { get; set; }
 
-
+    [Column("Username")]
+    [StringLength(50)]
     [Required]
-    [MaxLength(50)]
-    public string? Username { get; set; }
+    public required string Username { get; set; }
 
     [Required]
     [MaxLength(100)]
-    public string? Email { get; set; }
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
 
     [Required]
-    [MaxLength(256)]
-    public string? PasswordHash { get; set; }
+    [MaxLength(255)]
+    public string PasswordHash { get; set; } = string.Empty;
+
+
+    public List<UserRole> UserRoles { get; set; } = [];
+
+    public void ClearRoles()
+    {
+        UserRoles.Clear();
+    }
+
 }

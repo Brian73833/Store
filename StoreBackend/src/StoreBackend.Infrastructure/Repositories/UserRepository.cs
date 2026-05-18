@@ -12,26 +12,23 @@ public class UserRepository : IUserRepository
     {
         _context = context;
     }
-
     public async Task<List<User>> GetAllAsync()
     {
         return await _context.Users.ToListAsync();
-    }
-
-    public async Task<User?> GetByIdAsync(Guid externalId)
-    {
-        return await _context.Users.FirstOrDefaultAsync(u => u.ExternalId == externalId);
-    }
-
-    public async Task DeleteAsync(User user)
-    {
-        _context.Users.Remove(user);
     }
 
     public async Task<User> CreateAsync(User user)
     {
         _context.Users.Add(user);
         return user;
+    }
+
+    public Task<User?> GetByIdAsync(Guid userId)
+    {
+        return _context.Users
+            .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => u.UserResourceId == userId);
     }
 
     public async Task<bool> HasUserByUsernameAsync(string username)
@@ -42,5 +39,13 @@ public class UserRepository : IUserRepository
     public async Task<bool> HasUserByEmailAsync(string email)
     {
         return await _context.Users.AnyAsync(u => u.Email == email);
+    }
+
+    public Task<User?> GetByUsername(string username)
+    {
+        return _context.Users
+         .Include(u => u.UserRoles)
+         .ThenInclude(ur => ur.Role)
+         .FirstOrDefaultAsync(u => u.Username == username);
     }
 }
