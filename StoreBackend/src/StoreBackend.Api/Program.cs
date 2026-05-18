@@ -17,6 +17,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     )
 );
 
+var allowedOrigins = builder.Configuration
+ .GetSection("Cors:AllowedOrigins")
+ .Get<string[]>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowedOriginsPolicy", policy =>
+    {
+        policy.WithOrigins(allowedOrigins!)
+     .AllowAnyHeader()
+     .AllowAnyMethod();
+    });
+});
+
+
 // Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -38,6 +52,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowedOriginsPolicy");
 
 app.UseAuthorization();
 
