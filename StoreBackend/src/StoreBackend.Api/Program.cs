@@ -38,6 +38,41 @@ builder.Services.AddCors(options =>
     });
 });
 
+var permitLimit = builder.Configuration
+ .GetValue<int>("RateLimiting:PermitLimit");
+
+var windowSeconds = builder.Configuration
+ .GetValue<int>("RateLimiting:WindowSeconds");
+
+var queueLimit = builder.Configuration
+ .GetValue<int>("RateLimiting:QueueLimit");
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("fixed", limiterOptions =>
+    {
+        limiterOptions.PermitLimit = permitLimit;
+        limiterOptions.Window = TimeSpan.FromSeconds(windowSeconds);
+        limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        limiterOptions.QueueLimit = queueLimit;
+    });
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.ContentType =
+            "application/json";
+        await context.HttpContext.Response.WriteAsync(
+            """
+            {
+                "status": 429,
+                "message": "Demasiadas solicitudes. Intente nuevamente mas tarde."
+            }
+            """,
+            cancellationToken: token);
+    };
+});
+
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
 builder.Services.AddAuthentication("Bearer")
@@ -104,10 +139,11 @@ app.UseCors("AllowedOriginsPolicy");
 
 app.UseAuthentication();
 
-//app.UseRateLimiter();
-
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseRateLimiter();
+
+app.MapControllers()
+    .RequireRateLimiting("fixed");
 
 app.Run();
